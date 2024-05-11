@@ -4,7 +4,7 @@ import streamlit as st
 # Load the CSV dataset
 @st.cache
 def load_data():
-    return pd.read_csv('your_dataset.csv')
+    return pd.read_csv('amazon_categories.csv')
 
 data = load_data()
 
