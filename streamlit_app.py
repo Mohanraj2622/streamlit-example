@@ -11,7 +11,13 @@ class ExpenseTracker:
             self.expenses[date] = amount
 
     def calculate_daily_expenses(self):
-        return self.expenses
+        daily_expenses = {}
+        for date, amount in self.expenses.items():
+            if date in daily_expenses:
+                daily_expenses[date] += amount
+            else:
+                daily_expenses[date] = amount
+        return daily_expenses
 
 def main():
     st.title("Expense Tracker")
@@ -40,3 +46,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
