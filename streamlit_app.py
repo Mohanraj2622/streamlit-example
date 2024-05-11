@@ -1,49 +1,72 @@
+import pickle
 import streamlit as st
+import numpy as np
 
-class ExpenseTracker:
-    def __init__(self):
-        self.expenses = {}
 
-    def add_expense(self, date, amount):
-        if date in self.expenses:
-            self.expenses[date] += amount
-        else:
-            self.expenses[date] = amount
+st.header('Book Recommender System Using Machine Learning')
+model = pickle.load(open('artifacts/model.pkl','rb'))
+book_names = pickle.load(open('artifacts/book_names.pkl','rb'))
+final_rating = pickle.load(open('artifacts/final_rating.pkl','rb'))
+book_pivot = pickle.load(open('artifacts/book_pivot.pkl','rb'))
 
-    def calculate_daily_expenses(self):
-        daily_expenses = {}
-        for date, amount in self.expenses.items():
-            if date in daily_expenses:
-                daily_expenses[date] += amount
-            else:
-                daily_expenses[date] = amount
-        return daily_expenses
 
-def main():
-    st.title("Expense Tracker")
-    tracker = ExpenseTracker()
+def fetch_poster(suggestion):
+    book_name = []
+    ids_index = []
+    poster_url = []
 
-    while True:
-        choice = st.sidebar.selectbox("Menu", ["Add Expense", "View Daily Expenses", "Exit"])
+    for book_id in suggestion:
+        book_name.append(book_pivot.index[book_id])
 
-        if choice == "Add Expense":
-            date = st.text_input("Enter date (YYYY-MM-DD):")
-            amount = st.number_input("Enter expense amount:", value=0.0)
-            if st.button("Add Expense"):
-                tracker.add_expense(date, amount)
-                st.success("Expense added successfully!")
-        elif choice == "View Daily Expenses":
-            daily_expenses = tracker.calculate_daily_expenses()
-            if not daily_expenses:
-                st.warning("No expenses recorded yet.")
-            else:
-                st.subheader("Daily Expenses:")
-                for date, amount in daily_expenses.items():
-                    st.write(f"{date}: ${amount}")
-        elif choice == "Exit":
-            st.warning("Exiting...")
-            break
+    for name in book_name[0]: 
+        ids = np.where(final_rating['title'] == name)[0][0]
+        ids_index.append(ids)
 
-if __name__ == "__main__":
-    main()
+    for idx in ids_index:
+        url = final_rating.iloc[idx]['image_url']
+        poster_url.append(url)
+
+    return poster_url
+
+
+
+def recommend_book(book_name):
+    books_list = []
+    book_id = np.where(book_pivot.index == book_name)[0][0]
+    distance, suggestion = model.kneighbors(book_pivot.iloc[book_id,:].values.reshape(1,-1), n_neighbors=6 )
+
+    poster_url = fetch_poster(suggestion)
+    
+    for i in range(len(suggestion)):
+            books = book_pivot.index[suggestion[i]]
+            for j in books:
+                books_list.append(j)
+    return books_list , poster_url       
+
+
+
+selected_books = st.selectbox(
+    "Type or select a book from the dropdown",
+    book_names
+)
+
+if st.button('Show Recommendation'):
+    recommended_books,poster_url = recommend_book(selected_books)
+    col1, col2, col3, col4, col5 = st.columns(5)
+    with col1:
+        st.text(recommended_books[1])
+        st.image(poster_url[1])
+    with col2:
+        st.text(recommended_books[2])
+        st.image(poster_url[2])
+
+    with col3:
+        st.text(recommended_books[3])
+        st.image(poster_url[3])
+    with col4:
+        st.text(recommended_books[4])
+        st.image(poster_url[4])
+    with col5:
+        st.text(recommended_books[5])
+        st.image(poster_url[5])
 
