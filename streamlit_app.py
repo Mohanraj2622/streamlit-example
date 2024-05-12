@@ -1,6 +1,5 @@
 import streamlit as st
 
-
 def calculate_result(expression):
     try:
         result = eval(expression)
@@ -12,21 +11,14 @@ def main():
     st.set_page_config(page_title="Real-time Calculator", page_icon=":1234:")
     st.title("Real-time Calculator")
 
-    expression = st_ace(
-        value="",
-        placeholder="Enter an expression...",
-        language="text",
-        height=100,
-        font_size=18,
-        theme="chrome",
-    )
+    expression = st.text_input("Enter an expression:")
 
+    # Calculate the result in real-time as the user types
     result = calculate_result(expression)
     st.write(f"Result: {result}")
 
 if __name__ == "__main__":
     main()
-
 
 
 
