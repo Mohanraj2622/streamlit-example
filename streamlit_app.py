@@ -8,8 +8,8 @@ def calculate_result(expression):
         return "Error"
 
 def main():
-    st.set_page_config(page_title="Real-time Calculator", page_icon=":1234:")
-    st.title("Real-time Calculator")
+    st.set_page_config(page_title="Calculator", page_icon=":1234:")
+    st.title("Inline Calculator")
 
     expression = st.text_input("Enter an expression:")
 
