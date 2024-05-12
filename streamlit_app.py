@@ -8,16 +8,18 @@ def calculate_result(expression):
         return "Error"
 
 def main():
-    st.set_page_config(page_title="Virtual Calculator", page_icon=":1234:")
-    st.title("Virtual Calculator")
+    st.set_page_config(page_title="Real-time Calculator", page_icon=":1234:")
+    st.title("Real-time Calculator")
 
     expression = st.text_input("Enter an expression:")
-    if st.button("Calculate"):
-        result = calculate_result(expression)
-        st.write(f"Result: {result}")
+
+    # Calculate the result in real-time as the user types
+    result = calculate_result(expression)
+    st.write(f"Result: {result}")
 
 if __name__ == "__main__":
     main()
+
 
 
 
