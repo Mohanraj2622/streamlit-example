@@ -1,27 +1,85 @@
-import pandas as pd
 import streamlit as st
 
-# Load the CSV dataset
-@st.cache
-def load_data():
-    return pd.read_csv('amazon_categories.csv')
+def main():
+    st.set_page_config(page_title="Virtual Calculator", page_icon=":1234:")
+    st.title("Virtual Calculator")
 
-data = load_data()
+    # Initialize the expression variable
+    expression = ""
 
-# Create a Streamlit app
-st.title('Product Recommendation System')
+    # Display the expression input field
+    expression = st.text_input("Enter an expression:", value=expression, key="expression")
 
-# User input for search query
-search_query = st.text_input('Search for a product:')
+    # Create a placeholder for the result
+    result = None
 
-# Filter the dataset based on the search query
-filtered_data = data[data['Product_Name'].str.contains(search_query, case=False)]
+    # Create buttons for each digit and operator
+    col1, col2, col3, col4 = st.beta_columns(4)
+    with col1:
+        if st.button("7"):
+            expression += "7"
+    with col2:
+        if st.button("8"):
+            expression += "8"
+    with col3:
+        if st.button("9"):
+            expression += "9"
+    with col4:
+        if st.button("/"):
+            expression += "/"
 
-# Display recommendations
-if not filtered_data.empty:
-    st.subheader('Recommended Products:')
-    st.dataframe(filtered_data)
-else:
-    st.write('No products found matching your search query.')
+    col1, col2, col3, col4 = st.beta_columns(4)
+    with col1:
+        if st.button("4"):
+            expression += "4"
+    with col2:
+        if st.button("5"):
+            expression += "5"
+    with col3:
+        if st.button("6"):
+            expression += "6"
+    with col4:
+        if st.button("*"):
+            expression += "*"
+
+    col1, col2, col3, col4 = st.beta_columns(4)
+    with col1:
+        if st.button("1"):
+            expression += "1"
+    with col2:
+        if st.button("2"):
+            expression += "2"
+    with col3:
+        if st.button("3"):
+            expression += "3"
+    with col4:
+        if st.button("-"):
+            expression += "-"
+
+    col1, col2, col3, col4 = st.beta_columns(4)
+    with col1:
+        if st.button("0"):
+            expression += "0"
+    with col2:
+        if st.button("."):
+            expression += "."
+    with col3:
+        if st.button("DEL"):
+            expression = expression[:-1]
+    with col4:
+        if st.button("+"):
+            expression += "+"
+
+    # Add a button to calculate the result
+    if st.button("Calculate"):
+        try:
+            result = eval(expression)
+        except Exception as e:
+            result = "Error"
+        st.write(f"Result: {result}")
+
+if __name__ == "__main__":
+    main()
+
 
 
